@@ -1,4 +1,14 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const glow = keyframes`
+  from {
+    box-shadow: 0 0 0px yellow;
+  }
+
+  to {
+    box-shadow: 0 0 10px 1px yellow;
+  }
+`;
 
 const GifGridItemStyles = styled.div`
     background: white;
@@ -7,6 +17,10 @@ const GifGridItemStyles = styled.div`
     position: relative;
     display: flex;
     flex-direction: column;
+    hover: {
+        border: 5px solid ${props => props.theme.gray};
+        animation: ${glow} 0.5s ease-in-out infinite alternate;
+    }
     .preview {
         display: ${props => (props.loading ? 'block' : 'none')};
         filter: blur(5px) grayscale(100%);

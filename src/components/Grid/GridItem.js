@@ -17,23 +17,23 @@ export default class GridItem extends Component {
         const { loading } = this.state;
         return (
             <GifGridItemStyles loading={loading}>
-                <img
-                    className="preview"
-                    src={item.images.fixed_width_still.url}
-                    alt={item.title}
-                />
-                <img
-                    className="moving"
-                    src={item.images.fixed_width.url}
-                    alt={item.title}
-                    onLoad={() => {
-                        this.setState({ loading: false });
-                    }}
-                />
-
-                <p>
-                    <Link to={`/gif/${item.id}`}> {item.title}</Link>
-                </p>
+                <Link to={`/gif/${item.id}`}>
+                    {' '}
+                    <img
+                        className="preview"
+                        src={item.images.fixed_width_still.url}
+                        alt={item.title}
+                    />
+                    <img
+                        className="moving"
+                        src={item.images.fixed_width.url}
+                        alt={item.title}
+                        onLoad={() => {
+                            this.setState({ loading: false });
+                        }}
+                    />
+                    <p>{item.title}</p>
+                </Link>
             </GifGridItemStyles>
         );
     }

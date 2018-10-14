@@ -3,21 +3,30 @@ import axios from 'axios';
 import debounce from 'lodash.debounce';
 import styled from 'styled-components';
 import GridItem from './GridItem';
+import Spinner from './Spinner';
+import ErrorMessage from '../ErrorMessage';
 
 const GifsGrid = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-gap: 60px;
-    max-width: 1000px;
+    grid-gap: 20px;
+    max-width: ${props => props.theme.maxWidth};
     margin: 0 auto;
 `;
+
+const SpinnerContainer = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
 export default class Grid extends Component {
     state = {
         gifs: [],
-        totalCount: 0,
         limit: 20,
         offset: 0,
-        loadingdata: false
+        totalCount: 0,
+        loadingData: false,
+        error: null
     };
     componentDidMount() {
         this.fetchGifs();
@@ -35,9 +44,8 @@ export default class Grid extends Component {
     }
 
     fetchGifs = debounce(async () => {
-        this.setState({ loadingData: true });
+        this.setState({ loadingData: true, error: null });
         const { limit, offset } = this.state;
-        console.log('loading next', offset);
         const { searchTerm } = this.props;
         const url =
             searchTerm.length > 0
@@ -49,18 +57,24 @@ export default class Grid extends Component {
             q: searchTerm,
             offset
         };
-        const results = await axios.get(url, {
-            params
-        });
-        const gifs = results.data.data;
-        const pagination = results.data.pagination;
-        this.setState(prevState => ({
-            gifs: [...prevState.gifs, ...gifs],
-            loadingData: false,
-            totalCount: pagination.total_count,
-            offset: prevState.offset + limit
-        }));
+        try {
+            const results = await axios.get(url, {
+                params
+            });
+            const gifs = results.data.data;
+            const pagination = results.data.pagination;
+            this.setState(prevState => ({
+                gifs: [...prevState.gifs, ...gifs],
+                loadingData: false,
+                totalCount: pagination.total_count,
+                offset: prevState.offset + limit
+            }));
+        } catch (error) {
+            console.log(error);
+            this.setState({ error, loadingData: false });
+        }
     }, 250);
+
     handleScroll = () => {
         const { loadingData, totalCount, offset } = this.state;
         if (loadingData || totalCount <= offset) return;
@@ -73,7 +87,7 @@ export default class Grid extends Component {
         }
     };
     render() {
-        const { gifs } = this.state;
+        const { gifs, loadingData, totalCount, offset, error } = this.state;
         return (
             <div>
                 <h2>Gifs</h2>
@@ -82,6 +96,10 @@ export default class Grid extends Component {
                         return <GridItem item={item} key={item.id} />;
                     })}
                 </GifsGrid>
+                {error && <ErrorMessage error={error} />}
+                <SpinnerContainer>
+                    {loadingData && <Spinner />}
+                </SpinnerContainer>
             </div>
         );
     }
