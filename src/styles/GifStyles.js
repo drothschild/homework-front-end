@@ -15,8 +15,8 @@ const GifGridItemStyles = styled.div`
         display: ${props => (props.loading ? 'none' : 'block')};
     }
     img {
-        width: 100%;
-        height: 200px;
+        height: 100%;
+        width: 200px;
         object-fit: cover;
     }
     p {

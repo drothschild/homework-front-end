@@ -11,30 +11,14 @@ const GifsGrid = styled.div`
     margin: 0 auto;
 `;
 export default class Grid extends Component {
-    state = { gifs: [], limit: 20, searchBox: '' };
-    fetchTrending = async () => {
-        const { limit } = this.state;
-        const data = await axios.get('http://api.giphy.com/v1/gifs/trending', {
-            params: {
-                api_key: process.env.REACT_APP_GIPHY_API_KEY,
-                limit: limit
-            }
-        });
-        const gifs = data.data.data;
-        this.setState({ gifs: gifs });
-    };
-    componentDidMount() {
-        this.fetchTrending();
-    }
     render() {
-        const { gifs } = this.state;
+        const { gifs } = this.props;
         return (
             <div>
                 <h2>Gifs</h2>
                 <GifsGrid>
                     {gifs.map(item => {
-                        return <GridItem item={item} key
-                        ={item.id} />;
+                        return <GridItem item={item} key={item.id} />;
                     })}
                 </GifsGrid>
             </div>
