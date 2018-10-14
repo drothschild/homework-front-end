@@ -1,28 +1,50 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styled, { ThemeProvider, injectGlobal } from 'styled-components';
+import theme from './styles/Theme';
+import Grid from './components/Grid/Grid';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+const StyledPage = styled.div`
+    background: white;
+    color: ${props => props.theme.black};
+`;
+
+const Inner = styled.div`
+    max-width: ${props => props.theme.maxWidth};
+    margin: 0 auto;
+    padding: 2rem;
+`;
+
+injectGlobal`
+  html {
+    box-sizing: border-box;
+    font-size: 10px;
   }
+  *, *:before, *:after {
+    box-sizing: inherit;
+  }
+  body {
+    padding: 0;
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 2;
+  }
+  a {
+    text-decoration: none;
+    color: ${theme.black};
+  }`;
+class App extends Component {
+    render() {
+        return (
+            <ThemeProvider theme={theme}>
+                <StyledPage>
+                    <Inner>
+                        <SearchBox />
+                        <Grid />
+                    </Inner>
+                </StyledPage>
+            </ThemeProvider>
+        );
+    }
 }
 
 export default App;
