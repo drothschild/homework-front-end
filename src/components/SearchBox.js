@@ -16,10 +16,11 @@ class SearchBox extends Component {
         super(props);
         this.searchInput = React.createRef();
     }
-    handleSearchTermChange = e => {
+    handleSearchTermChange = async e => {
         this.props.handleSearchTermChange(e.target.value);
+        // Navigate to grid if not already there.
         if (window.location.pathname !== '/') {
-            navigate('/');
+            await navigate('/');
             this.searchInput.current.focus();
         }
     };

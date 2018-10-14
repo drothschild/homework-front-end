@@ -18,7 +18,6 @@ const ErrorStyles = styled.div`
 `;
 
 const DisplayError = ({ error }) => {
-    console.log(error);
     if (!error || !error.message) return null;
     if (
         error.networkError &&

@@ -9,9 +9,12 @@ import ErrorMessage from '../ErrorMessage';
 const GifsGrid = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-gap: 20px;
+    grid-gap: 60px;
     max-width: ${props => props.theme.maxWidth};
     margin: 0 auto;
+    @media (maxwidth: ${props => props.theme.phone}) {
+        grid-template-columns: 1fr 1fr;
+    }
 `;
 
 const SpinnerContainer = styled.div`
@@ -22,7 +25,7 @@ const SpinnerContainer = styled.div`
 export default class Grid extends Component {
     state = {
         gifs: [],
-        limit: 20,
+        limit: 60,
         offset: 0,
         totalCount: 0,
         loadingData: false,
@@ -33,8 +36,8 @@ export default class Grid extends Component {
         window.addEventListener('scroll', this.handleScroll);
     }
     componentDidUpdate(prevProps) {
+        // reset the state to blank if the search term has changed
         if (prevProps.searchTerm !== this.props.searchTerm) {
-            // Either remove or implement Loading Data
             this.setState({ gifs: [], offset: 0 });
             this.fetchGifs();
         }
@@ -47,6 +50,7 @@ export default class Grid extends Component {
         this.setState({ loadingData: true, error: null });
         const { limit, offset } = this.state;
         const { searchTerm } = this.props;
+        // Set url based on presence or absence of search term
         const url =
             searchTerm.length > 0
                 ? 'http://api.giphy.com/v1/gifs/search'
@@ -70,15 +74,17 @@ export default class Grid extends Component {
                 offset: prevState.offset + limit
             }));
         } catch (error) {
-            console.log(error);
             this.setState({ error, loadingData: false });
         }
     }, 250);
 
     handleScroll = () => {
         const { loadingData, totalCount, offset } = this.state;
-        if (loadingData || totalCount <= offset) return;
-
+        // Why is there a max anyway? To avoid exceeding the Developer API rate limit
+        const { max } = this.props;
+        // cancel under these conditions
+        if (loadingData || totalCount <= offset || max <= offset) return;
+        // If we've reached the bottom of the page, call fetch gifs ()
         if (
             window.innerHeight + document.documentElement.scrollTop ===
             document.documentElement.offsetHeight
@@ -87,10 +93,9 @@ export default class Grid extends Component {
         }
     };
     render() {
-        const { gifs, loadingData, totalCount, offset, error } = this.state;
+        const { gifs, loadingData, error } = this.state;
         return (
             <div>
-                <h2>Gifs</h2>
                 <GifsGrid>
                     {gifs.map(item => {
                         return <GridItem item={item} key={item.id} />;

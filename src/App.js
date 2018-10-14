@@ -6,10 +6,7 @@ import { Router } from '@reach/router';
 import theme from './styles/Theme';
 import Grid from './components/Grid/Grid';
 import SearchBox from './components/SearchBox';
-import ErrorMessage from './components/ErrorMessage';
 import Details from './components/Details';
-/*  The majority of the app's logic is contained in this file, and all of React's state. I think the app is sufficiently simple that there's no need to use state management software like redux or context.
- */
 
 const StyledPage = styled.div`
     background: white;
@@ -40,26 +37,27 @@ injectGlobal`
     text-decoration: none;
     color: ${theme.black};
   }`;
+// Todo: Transfer gifsRequest here.
 class App extends Component {
     state = {
         searchTerm: '',
         gifs: [],
-        error: null,
         totalCount: 0,
-        limit: 20,
-        offset: 0
+        limit: 60,
+        offset: 0,
+        max: 300
     };
     handleSearchTermChange = async searchTerm => {
         this.setState({ searchTerm });
     };
 
     render() {
-        const { searchTerm, gifs, error, limit } = this.state;
+        const { searchTerm, gifs, limit, max } = this.state;
         return (
             <ThemeProvider theme={theme}>
                 <StyledPage>
                     <Inner>
-                        {error && <ErrorMessage error={error} />}
+                        <h2>Gifphy Assignment</h2>
                         <SearchBox
                             searchTerm={searchTerm}
                             handleSearchTermChange={this.handleSearchTermChange}
@@ -70,6 +68,7 @@ class App extends Component {
                                 gifs={gifs}
                                 limit={limit}
                                 searchTerm={searchTerm}
+                                max={max}
                             />
                             <Details path="/gif/:gifId" />
                         </Router>

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import axios from 'axios';
+import ErrorMessage from './ErrorMessage';
+import Spinner from './Grid/Spinner';
 
 const GifDetails = styled.div`
     background: white;
@@ -53,45 +55,48 @@ export default class Details extends Component {
     }
 
     search = async () => {
-        console.log(this.props.gifId);
-
         const url = `http://api.giphy.com/v1/gifs/${this.props.gifId}`;
-
+        this.setState({ loadingData: true, error: null });
         const params = {
             api_key: process.env.REACT_APP_GIPHY_API_KEY
         };
-        this.setState({ loadingData: true });
-
-        const results = await axios.get(url, {
-            params
-        });
-        // const item = data.data.data;
-        this.setState({ item: results.data.data, loadingData: false });
+        try {
+            const results = await axios.get(url, {
+                params
+            });
+            this.setState({ item: results.data.data, loadingData: false });
+        } catch (error) {
+            this.setState({ loadingData: false, error });
+        }
     };
     render() {
-        const { loadingGif, loadingData, item } = this.state;
+        const { loadingGif, loadingData, item, error } = this.state;
         if (loadingData) {
-            return <div>Loading...</div>;
+            return <Spinner />;
         }
-        console.log(item);
         return (
             <GifDetails loading={loadingGif}>
-                <img
-                    className="preview"
-                    src={item.images.original_still.url}
-                    alt={item.title}
-                />
-                <img
-                    className="moving"
-                    src={item.images.original.url}
-                    alt={item.title}
-                    onLoad={() => {
-                        this.setState({ loadingGif: false });
-                    }}
-                />
+                {error && <ErrorMessage error={error} />}
+                {item && (
+                    <>
+                        <img
+                            className="preview"
+                            src={item.images.original_still.url}
+                            alt={item.title}
+                        />
+                        <img
+                            className="moving"
+                            src={item.images.original.url}
+                            alt={item.title}
+                            onLoad={() => {
+                                this.setState({ loadingGif: false });
+                            }}
+                        />
 
-                <p>{item.title}</p>
-                <p>caption: {item.caption}</p>
+                        <p>{item.title}</p>
+                        <p>caption: {item.caption}</p>
+                    </>
+                )}
             </GifDetails>
         );
     }
