@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import styled, { ThemeProvider, injectGlobal } from 'styled-components';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
+import { Router } from '@reach/router';
 import theme from './styles/Theme';
 import Grid from './components/Grid/Grid';
 import SearchBox from './components/SearchBox';
 import ErrorMessage from './components/ErrorMessage';
+import Details from './components/Details';
 /*  The majority of the app's logic is contained in this file, and all of React's state. I think the app is sufficiently simple that there's no need to use state management software like redux or context.
  */
 
@@ -43,33 +45,13 @@ class App extends Component {
         searchTerm: '',
         gifs: [],
         error: null,
-        limit: 20
+        totalCount: 0,
+        limit: 20,
+        offset: 0
     };
-    componentDidMount() {
-        console.log('mounted');
-        this.fetchGifs();
-    }
     handleSearchTermChange = async searchTerm => {
         this.setState({ searchTerm });
-        this.fetchGifs();
     };
-    fetchGifs = debounce(async () => {
-        const { limit, searchTerm } = this.state;
-        const url =
-            searchTerm.length > 0
-                ? 'http://api.giphy.com/v1/gifs/search'
-                : 'http://api.giphy.com/v1/gifs/trending';
-        const params = {
-            api_key: process.env.REACT_APP_GIPHY_API_KEY,
-            limit,
-            q: searchTerm
-        };
-        const data = await axios.get(url, {
-            params
-        });
-        const gifs = data.data.data;
-        this.setState({ gifs });
-    }, 250);
 
     render() {
         const { searchTerm, gifs, error, limit } = this.state;
@@ -82,7 +64,15 @@ class App extends Component {
                             searchTerm={searchTerm}
                             handleSearchTermChange={this.handleSearchTermChange}
                         />
-                        <Grid gifs={gifs} limit={limit} />
+                        <Router>
+                            <Grid
+                                path="/"
+                                gifs={gifs}
+                                limit={limit}
+                                searchTerm={searchTerm}
+                            />
+                            <Details path="/gif/:gifId" />
+                        </Router>
                     </Inner>
                 </StyledPage>
             </ThemeProvider>

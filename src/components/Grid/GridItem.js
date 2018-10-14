@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from '@reach/router';
 import { GifGridItemStyles } from '../../styles/GifStyles';
 
 export default class GridItem extends Component {
-    state = { loading: true };
+    state = {
+        loading: true
+    };
+
     static propTypes = {
         item: PropTypes.object.isRequired
     };
@@ -27,7 +31,9 @@ export default class GridItem extends Component {
                     }}
                 />
 
-                <p>{item.title}</p>
+                <p>
+                    <Link to={`/gif/${item.id}`}> {item.title}</Link>
+                </p>
             </GifGridItemStyles>
         );
     }
