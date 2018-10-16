@@ -20,11 +20,9 @@ const Inner = styled.div`
 
 const StyledHeader = styled.div`
     background-color: ${props => props.theme.blue};
-    color: white;
     display: grid;
-    grid-template-columns: auto 1fr;
-    justify-content: space-between;
     align-items: stretch;
+    margin-bottom: 2rem;
     @media (max-width: 1300px) {
         grid-template-columns: 1fr;
         justify-content: center;
@@ -38,7 +36,11 @@ const Logo = styled.h1`
         margin: 0;
         text-align: center;
     }
+    a {
+        color: white;
+    }
 `;
+
 injectGlobal`
   html {
     box-sizing: border-box;
@@ -55,7 +57,7 @@ injectGlobal`
   }
   a {
     text-decoration: none;
-    color: ${theme.blue};
+    color: ${theme.purple};
   }`;
 
 class App extends Component {
@@ -71,17 +73,16 @@ class App extends Component {
         return (
             <ThemeProvider theme={theme}>
                 <StyledPage>
+                    <StyledHeader>
+                        <Logo>
+                            <a href="/">Giphy</a>
+                        </Logo>
+                        <SearchBox
+                            searchTerm={searchTerm}
+                            handleSearchTermChange={this.handleSearchTermChange}
+                        />
+                    </StyledHeader>
                     <Inner>
-                        <StyledHeader>
-                            <Logo>Giphy</Logo>
-                            <SearchBox
-                                searchTerm={searchTerm}
-                                handleSearchTermChange={
-                                    this.handleSearchTermChange
-                                }
-                            />
-                        </StyledHeader>
-
                         <Router>
                             <Grid path="/" searchTerm={searchTerm} />
                             <Details path="/gif/:gifId" />
