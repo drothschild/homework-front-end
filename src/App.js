@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled, { ThemeProvider, injectGlobal } from 'styled-components';
-import axios from 'axios';
-import debounce from 'lodash.debounce';
+
 import { Router } from '@reach/router';
 import theme from './styles/Theme';
 import Grid from './components/Grid/Grid';
@@ -19,6 +18,27 @@ const Inner = styled.div`
     padding: 2rem;
 `;
 
+const StyledHeader = styled.div`
+    background-color: ${props => props.theme.blue};
+    color: white;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    justify-content: space-between;
+    align-items: stretch;
+    @media (max-width: 1300px) {
+        grid-template-columns: 1fr;
+        justify-content: center;
+    }
+`;
+
+const Logo = styled.h1`
+    font-size: 4rem;
+    margin-left: 2rem;
+    @media (max-width: 1300px) {
+        margin: 0;
+        text-align: center;
+    }
+`;
 injectGlobal`
   html {
     box-sizing: border-box;
@@ -35,41 +55,35 @@ injectGlobal`
   }
   a {
     text-decoration: none;
-    color: ${theme.black};
+    color: ${theme.blue};
   }`;
-// Todo: Transfer gifsRequest here.
+
 class App extends Component {
     state = {
-        searchTerm: '',
-        gifs: [],
-        totalCount: 0,
-        limit: 60,
-        offset: 0,
-        max: 300
+        searchTerm: ''
     };
     handleSearchTermChange = async searchTerm => {
         this.setState({ searchTerm });
     };
 
     render() {
-        const { searchTerm, gifs, limit, max } = this.state;
+        const { searchTerm } = this.state;
         return (
             <ThemeProvider theme={theme}>
                 <StyledPage>
                     <Inner>
-                        <h2>Gifphy Assignment</h2>
-                        <SearchBox
-                            searchTerm={searchTerm}
-                            handleSearchTermChange={this.handleSearchTermChange}
-                        />
-                        <Router>
-                            <Grid
-                                path="/"
-                                gifs={gifs}
-                                limit={limit}
+                        <StyledHeader>
+                            <Logo>Giphy</Logo>
+                            <SearchBox
                                 searchTerm={searchTerm}
-                                max={max}
+                                handleSearchTermChange={
+                                    this.handleSearchTermChange
+                                }
                             />
+                        </StyledHeader>
+
+                        <Router>
+                            <Grid path="/" searchTerm={searchTerm} />
                             <Details path="/gif/:gifId" />
                         </Router>
                     </Inner>

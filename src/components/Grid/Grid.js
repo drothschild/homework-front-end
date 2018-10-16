@@ -3,25 +3,22 @@ import axios from 'axios';
 import debounce from 'lodash.debounce';
 import styled from 'styled-components';
 import GridItem from './GridItem';
-import Spinner from './Spinner';
+import Spinner from '../Spinner';
 import ErrorMessage from '../ErrorMessage';
 
 const GifsGrid = styled.div`
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-gap: 60px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-gap: 30px;
     max-width: ${props => props.theme.maxWidth};
     margin: 0 auto;
-    @media (maxwidth: ${props => props.theme.phone}) {
-        grid-template-columns: 1fr 1fr;
-    }
 `;
 
 const SpinnerContainer = styled.div`
     display: flex;
     justify-content: center;
 `;
-
+//ToDO: Add props declaration
 export default class Grid extends Component {
     state = {
         gifs: [],
@@ -45,7 +42,6 @@ export default class Grid extends Component {
     componentWillUnmount() {
         window.removeEventListener('scroll', this.handleScroll);
     }
-
     fetchGifs = debounce(async () => {
         this.setState({ loadingData: true, error: null });
         const { limit, offset } = this.state;
@@ -79,14 +75,13 @@ export default class Grid extends Component {
     }, 250);
 
     handleScroll = () => {
-        const { loadingData, totalCount, offset } = this.state;
         // Why is there a max anyway? To avoid exceeding the Developer API rate limit
-        const { max } = this.props;
+        const { loadingData, totalCount, offset, max } = this.state;
         // cancel under these conditions
         if (loadingData || totalCount <= offset || max <= offset) return;
-        // If we've reached the bottom of the page, call fetch gifs ()
+        // If we've near the end of the page, call fetch gifs ()
         if (
-            window.innerHeight + document.documentElement.scrollTop ===
+            window.innerHeight + document.documentElement.scrollTop + 500 >=
             document.documentElement.offsetHeight
         ) {
             this.fetchGifs();

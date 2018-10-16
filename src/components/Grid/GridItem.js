@@ -18,15 +18,14 @@ export default class GridItem extends Component {
         return (
             <GifGridItemStyles loading={loading}>
                 <Link to={`/gif/${item.id}`}>
-                    {' '}
                     <img
                         className="preview"
-                        src={item.images.fixed_width_still.url}
+                        src={item.images.fixed_height_still.url}
                         alt={item.title}
                     />
                     <img
                         className="moving"
-                        src={item.images.fixed_width.url}
+                        src={item.images.fixed_height.url}
                         alt={item.title}
                         onLoad={() => {
                             this.setState({ loading: false });
