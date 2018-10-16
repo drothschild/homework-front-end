@@ -49,8 +49,8 @@ export default class Grid extends Component {
         // Set url based on presence or absence of search term
         const url =
             searchTerm.length > 0
-                ? 'http://api.giphy.com/v1/gifs/search'
-                : 'http://api.giphy.com/v1/gifs/trending';
+                ? 'https://api.giphy.com/v1/gifs/search'
+                : 'https://api.giphy.com/v1/gifs/trending';
         const params = {
             api_key: process.env.REACT_APP_GIPHY_API_KEY,
             limit,

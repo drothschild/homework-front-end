@@ -49,7 +49,7 @@ export default class Details extends Component {
     }
 
     loadSingleGif = async () => {
-        const url = `http://api.giphy.com/v1/gifs/${this.props.gifId}`;
+        const url = `https://api.giphy.com/v1/gifs/${this.props.gifId}`;
         this.setState({ loadingData: true, error: null });
         const params = {
             api_key: process.env.REACT_APP_GIPHY_API_KEY
