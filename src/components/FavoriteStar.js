@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 const StarSVG = styled.svg`
     margin-top: -3rem;
+    margin-left: 90%;
+    cursor: pointer;
     path {
         fill: ${props => (props.favorite ? 'yellow' : 'white')};
     }

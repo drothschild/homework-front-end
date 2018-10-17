@@ -5,7 +5,7 @@ import theme from './styles/Theme';
 import Grid from './components/Grid/Grid';
 import SearchBox from './components/SearchBox';
 import Details from './components/Details';
-
+import { removeDuplicates } from './utils/utils';
 const StyledPage = styled.div`
     background: white;
     color: ${props => props.theme.black};
@@ -92,7 +92,7 @@ class App extends Component {
     };
 
     handleGifChange = gifs => {
-        const markedGifs = this.markFavorites(gifs, this.state.favorites);
+        const markedGifs = this.markFavorites(removeDuplicates(gifs,"id"), this.state.favorites);
         this.setState({ gifs: markedGifs });
     };
     handleSearchTermChange = searchTerm => {

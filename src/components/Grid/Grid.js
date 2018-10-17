@@ -21,7 +21,7 @@ const SpinnerContainer = styled.div`
 //ToDO: Add props declaration
 export default class Grid extends Component {
     state = {
-        limit: 9,
+        limit: 30,
         totalCount: 0,
         loadingData: false,
         error: null
