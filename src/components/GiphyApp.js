@@ -13,6 +13,7 @@ const theme = {
     white: '#FFFFFF',
     gray: '#5e5f5f',
     purple: '#5C515A',
+    yellow: '#f7ff00',
     black: '#373838',
     maxWidth: '1300px',
     bs: '0 12px 24px 0 rgba(0, 0, 0, 0.09)'
@@ -54,6 +55,7 @@ const Logo = styled.h1`
         text-align: center;
     }
     a {
+        text-decoration: none;
         color: white;
     }
 `;

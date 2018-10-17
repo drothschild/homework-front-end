@@ -6,7 +6,7 @@ const StarSVG = styled.svg`
     margin-left: 90%;
     cursor: pointer;
     path {
-        fill: ${props => (props.favorite ? 'yellow' : 'white')};
+        fill: ${props => (props.favorite ? props.theme.yellow : 'white')};
     }
 `;
 export default class FavoriteStar extends Component {

@@ -69,7 +69,6 @@ export default class Details extends Component {
             const results = await axios.get(url, {
                 params
             });
-            console.log(results);
             this.setState({ gif: results.data.data, loadingData: false });
         } catch (error) {
             this.setState({ loadingData: false, error });
