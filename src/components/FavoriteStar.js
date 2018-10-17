@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 const StarSVG = styled.svg`
-    margin-top: -3rem;
-    margin-left: 90%;
+    margin-top: -6rem;
+    margin-left: 80%;
     cursor: pointer;
     path {
         fill: ${props => (props.favorite ? props.theme.yellow : 'white')};
@@ -15,8 +15,8 @@ export default class FavoriteStar extends Component {
             <StarSVG
                 favorite={this.props.favorite}
                 xmlns="http://www.w3.org/2000/svg"
-                width="25"
-                height="25"
+                width="50"
+                height="50"
                 viewBox="0 0 51 48"
                 onClick={this.props.onClick}
             >
