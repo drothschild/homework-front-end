@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styled, { ThemeProvider, injectGlobal } from 'styled-components';
-
 import { Router } from '@reach/router';
 import theme from './styles/Theme';
 import Grid from './components/Grid/Grid';
@@ -62,14 +61,55 @@ injectGlobal`
 
 class App extends Component {
     state = {
-        searchTerm: ''
+        searchTerm: '',
+        gifs: [],
+        favorites: []
     };
-    handleSearchTermChange = async searchTerm => {
+
+    componentDidMount() {
+        const favorites = JSON.parse(localStorage.getItem('favorites'));
+        if (favorites) {
+            this.setState({ favorites });
+        }
+    }
+
+    changeFavorites = gifId => {
+        const { favorites, gifs } = this.state;
+        let newFavorites = [];
+        if (favorites.includes(gifId)) {
+            newFavorites = favorites.filter(id => {
+                return id !== gifId;
+            });
+        } else {
+            newFavorites = [...favorites, gifId];
+        }
+        this.setState({
+            favorites: newFavorites
+        });
+        localStorage.setItem('favorites', JSON.stringify(newFavorites));
+        const markedGifs = this.markFavorites(gifs, newFavorites);
+        this.setState({ gifs: markedGifs });
+    };
+
+    handleGifChange = gifs => {
+        const markedGifs = this.markFavorites(gifs, this.state.favorites);
+        this.setState({ gifs: markedGifs });
+    };
+    handleSearchTermChange = searchTerm => {
         this.setState({ searchTerm });
     };
 
+    markFavorites = (gifs, favorites) => {
+        if (favorites) {
+            const markedGifs = gifs.map(gif => {
+                return { ...gif, favorite: favorites.includes(gif.id) };
+            });
+            return markedGifs;
+        } else return gifs;
+    };
+
     render() {
-        const { searchTerm } = this.state;
+        const { searchTerm, gifs } = this.state;
         return (
             <ThemeProvider theme={theme}>
                 <StyledPage>
@@ -84,8 +124,14 @@ class App extends Component {
                     </StyledHeader>
                     <Inner>
                         <Router>
-                            <Grid path="/" searchTerm={searchTerm} />
-                            <Details path="/gif/:gifId" />
+                            <Grid
+                                path="/"
+                                gifs={gifs}
+                                handleGifChange={this.handleGifChange}
+                                searchTerm={searchTerm}
+                                changeFavorites={this.changeFavorites}
+                            />
+                            <Details path="/gif/:gifId" gifs={gifs} />
                         </Router>
                     </Inner>
                 </StyledPage>

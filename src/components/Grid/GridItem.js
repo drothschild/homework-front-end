@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from '@reach/router';
 import { GifGridItemStyles } from '../../styles/GifStyles';
-
+import FavoriteStar from '../FavoriteStar';
 export default class GridItem extends Component {
     state = {
         loading: true
+    };
+    handleClick = e => {
+        e.preventDefault();
+        this.props.changeFavorites();
     };
 
     static propTypes = {
@@ -13,7 +17,7 @@ export default class GridItem extends Component {
     };
 
     render() {
-        const { item } = this.props;
+        const { item, changeFavorites } = this.props;
         const { loading } = this.state;
         return (
             <GifGridItemStyles loading={loading}>
@@ -31,8 +35,17 @@ export default class GridItem extends Component {
                             this.setState({ loading: false });
                         }}
                     />
-                    <p>{item.title}</p>
                 </Link>
+                <FavoriteStar
+                    favorite={item.favorite}
+                    onClick={e => {
+                        e.stopPropagation();
+                        console.log(e);
+                        changeFavorites(item.id);
+                    }}
+                />
+
+                <p>{item.title}</p>
             </GifGridItemStyles>
         );
     }

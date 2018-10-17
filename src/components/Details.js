@@ -37,15 +37,25 @@ export default class Details extends Component {
     state = {
         loadingGif: true,
         loadingData: false,
-        error: null
+        error: null,
+        gif: null
     };
 
     static propTypes = {
-        gifId: PropTypes.string
+        gifId: PropTypes.string,
+        gifs: PropTypes.array
     };
 
     componentDidMount() {
-        this.loadSingleGif();
+        const { gifs, gifId } = this.props;
+        if (gifs) {
+            const [gif] = gifs.filter(gif => {
+                return gif.id === gifId;
+            });
+            this.setState({ gif });
+        } else {
+            this.loadSingleGif();
+        }
     }
 
     loadSingleGif = async () => {
@@ -58,39 +68,40 @@ export default class Details extends Component {
             const results = await axios.get(url, {
                 params
             });
-            this.setState({ item: results.data.data, loadingData: false });
+            this.setState({ gif: results.data.data, loadingData: false });
         } catch (error) {
             this.setState({ loadingData: false, error });
         }
     };
     render() {
-        const { loadingGif, loadingData, item, error } = this.state;
-        console.log(this.props);
+        const { loadingGif, loadingData, gif, error } = this.state;
         if (loadingData) {
             return <Spinner />;
         }
         return (
             <div>
-                {item && <h2>{item.title}</h2>}
+                {gif && <h2>{gif.title}</h2>}
                 <GifDetails loading={loadingGif}>
                     {error && <ErrorMessage error={error} />}
-                    {item && (
+                    {gif && (
                         <>
                             <img
                                 className="preview"
-                                src={item.images.original_still.url}
-                                alt={item.title}
+                                src={gif.images.original_still.url}
+                                alt={gif.title}
                             />
                             <img
                                 className="moving"
-                                src={item.images.original.url}
-                                alt={item.title}
+                                src={gif.images.original.url}
+                                alt={gif.title}
                                 onLoad={() => {
                                     this.setState({ loadingGif: false });
                                 }}
                             />
-
-                            <p>caption: {item.caption}</p>
+                            <ul>
+                                {gif.caption && <li>caption: {gif.caption}</li>}
+                                {gif.source && <li>Source: {gif.source}</li>}
+                            </ul>
                         </>
                     )}
                 </GifDetails>

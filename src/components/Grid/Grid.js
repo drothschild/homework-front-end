@@ -21,9 +21,7 @@ const SpinnerContainer = styled.div`
 //ToDO: Add props declaration
 export default class Grid extends Component {
     state = {
-        gifs: [],
-        limit: 60,
-        offset: 0,
+        limit: 9,
         totalCount: 0,
         loadingData: false,
         error: null
@@ -35,17 +33,19 @@ export default class Grid extends Component {
     componentDidUpdate(prevProps) {
         // reset the state to blank if the search term has changed
         if (prevProps.searchTerm !== this.props.searchTerm) {
-            this.setState({ gifs: [], offset: 0 });
+            this.setState({ offset: 0 });
+            this.props.handleGifChange([]);
             this.fetchGifs();
         }
     }
     componentWillUnmount() {
         window.removeEventListener('scroll', this.handleScroll);
     }
+    // Debounce keeps the client from searching for gifs too many times.
     fetchGifs = debounce(async () => {
         this.setState({ loadingData: true, error: null });
-        const { limit, offset } = this.state;
-        const { searchTerm } = this.props;
+        const { limit } = this.state;
+        const { searchTerm, handleGifChange, gifs } = this.props;
         // Set url based on presence or absence of search term
         const url =
             searchTerm.length > 0
@@ -55,24 +55,24 @@ export default class Grid extends Component {
             api_key: process.env.REACT_APP_GIPHY_API_KEY,
             limit,
             q: searchTerm,
-            offset
+            offset: gifs.length
         };
         try {
             const results = await axios.get(url, {
                 params
             });
-            const gifs = results.data.data;
+            const newGifs = results.data.data;
             const pagination = results.data.pagination;
+            handleGifChange([...gifs, ...newGifs]);
+            console.log(gifs.length);
             this.setState(prevState => ({
-                gifs: [...prevState.gifs, ...gifs],
                 loadingData: false,
-                totalCount: pagination.total_count,
-                offset: prevState.offset + limit
+                totalCount: pagination.total_count
             }));
         } catch (error) {
             this.setState({ error, loadingData: false });
         }
-    }, 250);
+    }, 300);
 
     handleScroll = () => {
         // Why is there a max anyway? To avoid exceeding the Developer API rate limit
@@ -88,12 +88,19 @@ export default class Grid extends Component {
         }
     };
     render() {
-        const { gifs, loadingData, error } = this.state;
+        const { gifs, changeFavorites } = this.props;
+        const { loadingData, error } = this.state;
         return (
             <div>
                 <GifsGrid>
                     {gifs.map(item => {
-                        return <GridItem item={item} key={item.id} />;
+                        return (
+                            <GridItem
+                                item={item}
+                                key={item.id}
+                                changeFavorites={changeFavorites}
+                            />
+                        );
                     })}
                 </GifsGrid>
                 {error && <ErrorMessage error={error} />}

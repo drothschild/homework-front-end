@@ -21,6 +21,7 @@ class SearchBox extends Component {
         // Navigate to grid if not already there.
         if (window.location.pathname !== '/') {
             await navigate('/');
+            // Then go back to this search box(and the user will be none the wiser that you ever left it)
             this.searchInput.current.focus();
         }
     };
@@ -34,7 +35,9 @@ class SearchBox extends Component {
                     placeholder="Search for Gifs"
                     value={searchTerm}
                     onChange={this.handleSearchTermChange}
+                    onClick={(e) => e.target.select()}
                     ref={this.searchInput}
+
                 />
             </Search>
         );
