@@ -41,6 +41,7 @@ const StyledHeader = styled.div`
     display: grid;
     align-items: start;
     margin-bottom: 2rem;
+    border-bottom: 2px solid ${props => props.theme.black};
     @media (max-width: 1300px) {
         grid-template-columns: 1fr;
         align-items: center;
@@ -156,7 +157,10 @@ class GiphyApp extends Component {
                                 searchTerm={searchTerm}
                                 changeFavorites={this.changeFavorites}
                             />
-                            <Details path="/gif/:gifId" gifs={gifs} />
+                            <Details
+                                path="/gif/:gifId"
+                                gifs={gifs}
+                            />
                         </Router>
                     </Inner>
                 </StyledPage>

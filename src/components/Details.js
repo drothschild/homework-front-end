@@ -102,7 +102,11 @@ export default class Details extends Component {
                             />
                             <ul>
                                 {gif.caption && <li>caption: {gif.caption}</li>}
-                                {gif.source && <li>Source: {gif.source}</li>}
+                                {gif.source && (
+                                    <li>
+                                        <a href={gif.source}>Source</a>
+                                    </li>
+                                )}
                             </ul>
                         </>
                     )}
