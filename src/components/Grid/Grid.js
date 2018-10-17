@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import GridItem from './GridItem';
 import Spinner from '../Spinner';
 import ErrorMessage from '../ErrorMessage';
@@ -18,13 +19,17 @@ const SpinnerContainer = styled.div`
     display: flex;
     justify-content: center;
 `;
-//ToDO: Add props declaration
 export default class Grid extends Component {
     state = {
-        limit: 30,
+        limit: 24,
         totalCount: 0,
         loadingData: false,
         error: null
+    };
+    static propTypes = {
+        gifs: PropTypes.array.isRequired,
+        searchTerm: PropTypes.string,
+        handleGifChange: PropTypes.func
     };
     componentDidMount() {
         this.fetchGifs();
@@ -64,7 +69,6 @@ export default class Grid extends Component {
             const newGifs = results.data.data;
             const pagination = results.data.pagination;
             handleGifChange([...gifs, ...newGifs]);
-            console.log(gifs.length);
             this.setState(prevState => ({
                 loadingData: false,
                 totalCount: pagination.total_count

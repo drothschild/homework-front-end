@@ -1,8 +1,38 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from '@reach/router';
-import { GifGridItemStyles } from '../../styles/GifStyles';
+import styled from 'styled-components';
 import FavoriteStar from '../FavoriteStar';
+
+const GifGridItemStyles = styled.div`
+    background: white;
+    border: 1px solid ${props => props.theme.gray};
+    box-shadow: ${props => props.theme.bs};
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    .preview {
+        display: ${props => (props.loading ? 'block' : 'none')};
+        filter: blur(5px) grayscale(100%);
+    }
+    .moving {
+        display: ${props => (props.loading ? 'none' : 'block')};
+    }
+    img {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+    }
+    p {
+        width: 100%
+        line-height: 2;
+        font-weight: 300;
+        flex-grow: 1;
+        padding: 0 3rem;
+        font-size: 1.5rem;
+    }
+`;
+
 export default class GridItem extends Component {
     state = {
         loading: true
@@ -40,7 +70,6 @@ export default class GridItem extends Component {
                     favorite={item.favorite}
                     onClick={e => {
                         e.stopPropagation();
-                        console.log(e);
                         changeFavorites(item.id);
                     }}
                 />

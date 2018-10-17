@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import axios from 'axios';
+import { Link } from '@reach/router';
 import ErrorMessage from './ErrorMessage';
 import Spinner from './Spinner';
 
@@ -48,7 +49,7 @@ export default class Details extends Component {
 
     componentDidMount() {
         const { gifs, gifId } = this.props;
-        if (gifs) {
+        if (gifs.length) {
             const [gif] = gifs.filter(gif => {
                 return gif.id === gifId;
             });
@@ -68,6 +69,7 @@ export default class Details extends Component {
             const results = await axios.get(url, {
                 params
             });
+            console.log(results);
             this.setState({ gif: results.data.data, loadingData: false });
         } catch (error) {
             this.setState({ loadingData: false, error });
@@ -80,6 +82,7 @@ export default class Details extends Component {
         }
         return (
             <div>
+                <Link to={`/`}>Back to gifs</Link>
                 {gif && <h2>{gif.title}</h2>}
                 <GifDetails loading={loadingGif}>
                     {error && <ErrorMessage error={error} />}
